@@ -10,9 +10,12 @@ __all__ = ('DAO',)
 class DAO:
     __model__: Model
 
-    def __new__(cls, *args, **kwargs) -> QueryBuilder:
-        database: DatabaseManager = kwargs.pop('db', db)
-        builder: QueryBuilder = database.table(cls.__model__.__table_name__)
-        for sql_func in args:
+    def __init__(self, *args):
+        self.args = args
+
+    def __call__(self, **kwargs) -> QueryBuilder:
+        database: DatabaseManager = kwargs.pop('db')
+        builder: QueryBuilder = database.table(self.__model__.__table_name__)
+        for sql_func in self.args:
             sql_func(builder)
         return builder
