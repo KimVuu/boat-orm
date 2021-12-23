@@ -23,7 +23,7 @@ class Transaction:
         self.db: DatabaseManager = db
 
     @contextmanager
-    def __call__(self) -> ContextManager[Callable[[], QueryBuilder]]:
+    def __call__(self) -> ContextManager[Callable[[DAO], QueryBuilder]]:
         self.db.begin_transaction()
         database: Database = Database(self.db)
 
