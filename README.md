@@ -12,7 +12,6 @@ import os
 
 from boat.utils.dao import DAO
 from boat.utils.database import DatabaseManager, Database
-from boat.utils.field import Field
 from boat.utils.model import Model
 from boat.utils.query import Query
 
