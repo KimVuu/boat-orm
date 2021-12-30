@@ -1,9 +1,7 @@
-from boat.utils import typing
-
 from typing import Any, List, Dict, Optional
 
 
-class SqlValue(typing.SqlValue):
+class SqlValue:
     format: str = '{sql}'
 
     def __init__(self, value: Any, bindings: Optional[List[Any]] = None, **kwargs: Any):
