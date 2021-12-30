@@ -1,17 +1,24 @@
-from typing import Tuple, TypeVar, Generic, Sequence, Optional, Any
+from typing import Any, Generic, Iterator, Optional, Sequence, Tuple, TypeVar
 
 from orator import DatabaseManager
 from orator.query.builder import QueryBuilder
 
-
-__all__ = ('WhereClause', 'Field', 'FieldDict', 'FieldDictDecorator', 'Model', 'DAO',)
+__all__ = (
+    'WhereClause', 'Field', 'FieldDict', 'FieldDictDecorator', 'Model', 'DAO',
+)
 
 
 T = TypeVar('T')
 
 
 class WhereClause:
-    def __init__(self, where_type: str, field: str, operator: Optional[Any] = None, value: Optional[Any] = None):
+    def __init__(
+        self,
+        where_type: str,
+        field: str,
+        operator: Optional[Any] = None,
+        value: Optional[Any] = None,
+    ):
         self.where_type: str = where_type
         self.field: str = field
         self.operator: Optional[Any] = operator
@@ -20,10 +27,10 @@ class WhereClause:
     def get(self) -> Tuple[str, str, Optional[Any], Optional[Any]]:
         return self.where_type, self.field, self.operator, self.value
 
-    def filter(self) -> Tuple[str, ...]:
-        return tuple(filter(lambda x: x, self.get()))
+    def filter(self) -> Iterator[Any]:
+        return filter(lambda x: x, self.get())
 
-    def where(self) -> Tuple[str, ...]:
+    def where(self) -> Iterator[Any]:
         return self.filter()
 
 
@@ -40,19 +47,32 @@ class Field(Generic[T]):
     def asc(self) -> Tuple[str, str]: return self.get_field_name(), "ASC"
     def desc(self) -> Tuple[str, str]: return self.get_field_name(), "DESC"
 
-    def eq(self, value: T) -> WhereClause: return WhereClause("where", self.get_field_name(), "=", value)
-    def gt(self, value: T) -> WhereClause: return WhereClause("where", self.get_field_name(), ">", value)
-    def gte(self, value: T) -> WhereClause: return WhereClause("where", self.get_field_name(), ">=", value)
-    def lt(self, value: T) -> WhereClause: return WhereClause("where", self.get_field_name(), "<", value)
-    def lte(self, value: T) -> WhereClause: return WhereClause("where", self.get_field_name(), "<=", value)
+    def eq(self, value: T) -> WhereClause:
+        return WhereClause("where", self.get_field_name(), "=", value)
 
-    def in_(self, values: Sequence[T]) -> WhereClause: return WhereClause("where_in", self.get_field_name(), values)
+    def gt(self, value: T) -> WhereClause:
+        return WhereClause("where", self.get_field_name(), ">", value)
+
+    def gte(self, value: T) -> WhereClause:
+        return WhereClause("where", self.get_field_name(), ">=", value)
+
+    def lt(self, value: T) -> WhereClause:
+        return WhereClause("where", self.get_field_name(), "<", value)
+
+    def lte(self, value: T) -> WhereClause:
+        return WhereClause("where", self.get_field_name(), "<=", value)
+
+    def in_(self, values: Sequence[T]) -> WhereClause:
+        return WhereClause("where_in", self.get_field_name(), values)
 
     def not_in(self, values: Sequence[T]) -> WhereClause:
         return WhereClause("where_not_in", self.get_field_name(), values)
 
-    def is_null(self) -> WhereClause: return WhereClause("where_null", self.get_field_name())
-    def is_not_null(self) -> WhereClause: return WhereClause("where_not_null", self.get_field_name())
+    def is_null(self) -> WhereClause:
+        return WhereClause("where_null", self.get_field_name())
+
+    def is_not_null(self) -> WhereClause:
+        return WhereClause("where_not_null", self.get_field_name())
 
 
 class FieldDict:
@@ -63,16 +83,15 @@ class FieldDict:
         return Field(item, table_name=self._table_name)
 
 
-class FieldDictDecorator(property):
-    def __get__(self, *args, **kwargs) -> FieldDict:
-        owner: "Model" = args[1]
+class FieldDictDecorator:
+    def __get__(self, instance, owner) -> FieldDict:
         return FieldDict(owner.__table_name__)
 
 
 class Model:
     __table_name__: str
 
-    fields: FieldDict = FieldDictDecorator()
+    fields: FieldDictDecorator = FieldDictDecorator()
 
 
 class DAO:

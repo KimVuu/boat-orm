@@ -1,14 +1,14 @@
-from typing import Any, List, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 
 class SqlValue:
     format: str = '{sql}'
 
-    def __init__(self, value: Any, bindings: Optional[List[Any]] = None, **kwargs: Any):
+    def __init__(
+        self, value: Any, bindings: Optional[List[Any]] = None, **kwargs: Any,
+    ):
         self.value: Any = value
-        self.bindings: List[Any] = bindings
-        if self.bindings is None:
-            self.bindings: List[Any] = []
+        self.bindings: Optional[List[Any]] = bindings
         self.kwargs: Dict[str, Any] = kwargs
 
     def get_value(self) -> Any:
@@ -21,9 +21,14 @@ class SqlValue:
         return self.format
 
     def get_sql(self) -> str:
-        return self.get_format().format(sql=self.get_value(), **self.get_kwargs())
+        return (
+            self.get_format()
+            .format(sql=self.get_value(), **self.get_kwargs())
+        )
 
     def get_bindings(self) -> List[Any]:
+        if self.bindings is None:
+            return []
         return self.bindings
 
 

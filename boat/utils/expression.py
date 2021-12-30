@@ -1,7 +1,6 @@
 from orator.query.expression import QueryExpression
 from orator.support.grammar import Grammar
 
-
 __all__ = ('RawSQL', 'OuterRef',)
 
 

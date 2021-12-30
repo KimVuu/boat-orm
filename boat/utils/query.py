@@ -2,9 +2,8 @@ from typing import Callable, Tuple, Union
 
 from orator.query.builder import QueryBuilder
 
-from boat.utils.model import WhereClause, Field
+from boat.utils.model import Field, WhereClause
 from boat.utils.queryset import Q
-
 
 __all__ = ('Query',)
 
@@ -34,9 +33,11 @@ class Query:
             query = new_query()
             for value in values.flat():
                 if isinstance(value, WhereClause):
-                    where_type, *values = value.where()
-                    query_callable: Callable[[Q], None] = getattr(query, where_type)
-                    query_callable(*values)
+                    where_type, *where_values = value.where()
+                    query_callable: Callable[[Q], None] = getattr(
+                        query, where_type
+                    )
+                    query_callable(*where_values)
                 elif isinstance(value, Q):
                     data = combine(new_query, value)
                     query.where_nested(data, boolean=value.has)

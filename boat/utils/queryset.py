@@ -1,7 +1,6 @@
-from typing import Union, Tuple, Generator
+from typing import Any, Generator, Tuple, Union
 
 from boat.utils.model import WhereClause
-
 
 __all__ = ('Q', 'And', 'Or',)
 
@@ -11,7 +10,7 @@ QueryArgs = Union[WhereClause, "Q"]
 
 class Q:
     def __init__(self, *args: QueryArgs, has:  str = 'AND'):
-        self.children: Tuple[QueryArgs] = args
+        self.children: Tuple[QueryArgs, ...] = args
         self.has: str = has
 
     def __and__(self, other: QueryArgs):
@@ -26,10 +25,7 @@ class Q:
     def __ior__(self, other: QueryArgs):
         return self.Or(self, other)
 
-    def add(self, *args: QueryArgs):
-        self.children: Tuple[QueryArgs] = self.children + args
-
-    def flat(self) -> Generator[QueryArgs]:
+    def flat(self) -> Generator[QueryArgs, Any, None]:
         for q in self.children:
             yield q
 
