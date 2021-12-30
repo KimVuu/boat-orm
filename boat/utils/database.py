@@ -4,7 +4,7 @@ from typing import Callable, ContextManager
 from orator import DatabaseManager
 from orator.query.builder import QueryBuilder
 
-from boat.utils.dao import DAO
+from boat.utils.model import DAO
 
 
 __all__ = ('DatabaseManager', 'Database', 'Transaction')
