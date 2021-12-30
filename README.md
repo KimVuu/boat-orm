@@ -10,9 +10,8 @@ Boat ORM은 orator에 QueryBuilder를 재사용 가능한 코드들로 관리하
 ```python
 import os
 
-from boat.utils.dao import DAO
 from boat.utils.database import DatabaseManager, Database
-from boat.utils.model import Model
+from boat.utils.model import Model, DAO
 from boat.utils.query import Query
 
 
