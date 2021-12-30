@@ -50,3 +50,11 @@ boat_list = (
     .all()
 )
 ```
+
+### 테스트
+> 테스트 코드 작성 + 시나리오 작성 필요
+```shell
+isort boat --check
+flake8 boat
+mypy boat
+```
